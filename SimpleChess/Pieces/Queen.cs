@@ -18,7 +18,7 @@ namespace SimpleChess.Pieces
 
         public override List<ChessPosition> getValidMoves(List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions)
         {
-            throw new NotImplementedException();
+            return new List<ChessPosition>();
         }
 
         public override void MovePiece(char x, int y)
