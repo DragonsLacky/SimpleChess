@@ -10,7 +10,7 @@ namespace SimpleChess.Pieces
 {
     public class King : ChessPiece
     {
-        King(char x, int y, ChessColor color, PictureBox piece) : base(x, y, color, piece) { }
+        public King(char x, int y, ChessColor color, PictureBox piece) : base(x, y, color, piece) { }
         public override void getValidMoves()
         {
             throw new NotImplementedException();
