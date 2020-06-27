@@ -27,6 +27,7 @@ namespace SimpleChess
         public PictureBox Piece { get; set; }
         public abstract void MovePiece(int x, int y);
         public abstract void getValidMoves();
+        public abstract bool checkValidMove(ChessPosition position);
         protected ChessPiece(char x, int y, ChessColor color, PictureBox piece)
         {
             Position = new ChessPosition(x, y);

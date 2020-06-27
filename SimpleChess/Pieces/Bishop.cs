@@ -10,6 +10,12 @@ namespace SimpleChess.Pieces
     public class Bishop : ChessPiece
     {
         public Bishop(char x, int y, ChessColor color, PictureBox piece): base(x, y, color, piece) { }
+
+        public override bool checkValidMove(ChessPosition position)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void getValidMoves()
         {
             throw new NotImplementedException();

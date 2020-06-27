@@ -16,6 +16,7 @@ namespace SimpleChess
     {
         Dictionary<char, Dictionary<int, PictureBox>> Board;
         Dictionary<PieceType, Dictionary<Color, Image>> PieceImages;
+        Dictionary<PictureBox, ChessPosition> positionOnBoard;
         Dictionary<PictureBox, ChessPiece> BoardPieces;
         List<ChessPiece> white_pieces;
         List<ChessPiece> black_pieces;
@@ -26,6 +27,7 @@ namespace SimpleChess
             InitializeComponent();
             Board = new Dictionary<char, Dictionary<int, PictureBox>>();
             PieceImages = new Dictionary<PieceType, Dictionary<Color, Image>>();
+            positionOnBoard = new Dictionary<PictureBox, ChessPosition>();
             BoardPieces = new Dictionary<PictureBox, ChessPiece>();
             white_pieces = new List<ChessPiece>();
             black_pieces = new List<ChessPiece>();
@@ -36,12 +38,6 @@ namespace SimpleChess
             loadImages();
             DrawBoard();
             InitializePieces();
-            InitializeRooks();
-            InitializeKnight();
-            InitializeBishop();
-            InitializeKing();
-            InitializeQueen();
-
         }
 
         private void loadImages()
@@ -91,13 +87,21 @@ namespace SimpleChess
 
         private void Board_MouseClick(Object sender, MouseEventArgs e)
         {
-            
+            if(clicked != null)
+            {
+                if (BoardPieces[clicked].checkValidMove(positionOnBoard[(PictureBox)sender]))
+                {
+
+                }
+                else return;
+            }
         }
 
         private void InitializePieces()
         {
             InitializePawns();
             InitializeRooks();
+            InitializeKnight();
             InitializeBishop();
             InitializeKing();
             InitializeQueen();
@@ -327,6 +331,7 @@ namespace SimpleChess
                         }
                     }
                     Controls.Add(Board[(char)j][i]);
+                    positionOnBoard.Add(Board[(char)j][i], new ChessPosition((char)j,i));
                     nextPosX += 75;
                 }
                 nextPosX = 60;
