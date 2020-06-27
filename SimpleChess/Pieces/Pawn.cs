@@ -13,18 +13,26 @@ namespace SimpleChess.Pieces
         bool startingPos;
         public Pawn(char x, int y, ChessColor color, PictureBox piece): base(x, y, color, piece) { startingPos = true; }
 
-        public override bool checkValidMove(ChessPosition position)
+        public override bool checkValidMove(ChessPosition position, List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions)
         {
-            throw new NotImplementedException();
+            List<ChessPosition> validPositions = getValidMoves(white, black, piecePositions);
+            foreach (ChessPosition pos in validPositions)
+            {
+                if(position == pos)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        public override List<ChessPosition> getValidMoves(List<ChessPiece> white, List<ChessPiece> black)
+        public override List<ChessPosition> getValidMoves(List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions)
         {
             List<ChessPosition> movablePos = new List<ChessPosition>();
             if(Color == ChessColor.WHITE)
             {
                 movablePos.Add(new ChessPosition(Position.X, Position.Y + 1));
-                if(startingPos)
+                if(startingPos && !piecePositions[Position.X][Position.Y + 1].ocupied)
                 {
                     movablePos.Add(new ChessPosition(Position.X, Position.Y + 2));
                 }
@@ -32,7 +40,7 @@ namespace SimpleChess.Pieces
             else
             {
                 movablePos.Add(new ChessPosition(Position.X, Position.Y - 1));
-                if (startingPos)
+                if (startingPos && !piecePositions[Position.X][Position.Y - 1].ocupied)
                 {
                     movablePos.Add(new ChessPosition(Position.X, Position.Y - 2));
                 }
@@ -59,7 +67,7 @@ namespace SimpleChess.Pieces
                     }
                 }
             }
-            foreach (ChessPiece piece in white)
+            foreach (ChessPiece piece in black)
             {
                 for (int i = 0; i < movablePos.Count; i++)
                 {
@@ -85,14 +93,11 @@ namespace SimpleChess.Pieces
             
         }
 
-        public override void MovePiece(int x, int y)
+        public override void MovePiece(char x, int y)
         {
-            if(startingPos)
-            {
-
-            }
+            Position.X = x;
+            Position.Y = y;
             startingPos = false;
-            throw new NotImplementedException();
         }
     }
 }

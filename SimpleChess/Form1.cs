@@ -86,7 +86,7 @@ namespace SimpleChess
             selected = Piece;
             if (e.Button != MouseButtons.Left)
                 return;
-            selectedMovable = BoardPieces[selected].getValidMoves(white_pieces, black_pieces);
+            selectedMovable = BoardPieces[selected].getValidMoves(white_pieces, black_pieces, piecePositions);
             foreach (ChessPosition pos in selectedMovable)
             {
                 if(piecePositions[pos.X][pos.Y].ocupied && piecePositions[pos.X][pos.Y].piece.Color != BoardPieces[selected].Color)
@@ -104,13 +104,68 @@ namespace SimpleChess
         
         private void Board_MouseClick(Object sender, MouseEventArgs e)
         {
-            if(selected != null)
+            if(selected != null && ((PictureBox)sender) != selected)
             {
-                //if (/*BoardPieces[selected].checkValidMove(positionOnBoard[(PictureBox)sender])*/)
-                //{
-
-                //}
+                if (BoardPieces[selected].checkValidMove(positionOnBoard[(PictureBox)sender], white_pieces, black_pieces, piecePositions))
+                {
+                    piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].ocupied = false;
+                    piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].piece = null;
+                    piecePositions[positionOnBoard[(PictureBox)sender].X][positionOnBoard[(PictureBox)sender].Y].ocupied = true;
+                    piecePositions[positionOnBoard[(PictureBox)sender].X][positionOnBoard[(PictureBox)sender].Y].piece = BoardPieces[selected];
+                    BoardPieces[selected].MovePiece(positionOnBoard[(PictureBox)sender].X, positionOnBoard[(PictureBox)sender].Y);
+                    animateMovement((PictureBox)sender);
+                }
                 DeselectBoard();
+            }
+            selected = null;
+
+        }
+
+        private void animateMovement(PictureBox sender)
+        {
+            while (selected.Location.X != sender.Location.X || selected.Location.Y != ((PictureBox)sender).Location.Y)
+            {
+                if (selected.Location.X != sender.Location.X && selected.Location.Y != ((PictureBox)sender).Location.Y)
+                {
+                    if (selected.Location.X < sender.Location.X && selected.Location.Y < sender.Location.Y)
+                    {
+                        selected.Location = new Point(selected.Location.X + 1, selected.Location.Y + 1);
+                    }
+                    else if (selected.Location.X < sender.Location.X && selected.Location.Y > sender.Location.Y)
+                    {
+                        selected.Location = new Point(selected.Location.X + 1, selected.Location.Y - 1);
+                    }
+                    else if (selected.Location.X > sender.Location.X && selected.Location.Y < sender.Location.Y)
+                    {
+                        selected.Location = new Point(selected.Location.X - 1, selected.Location.Y + 1);
+                    }
+                    else if (selected.Location.X > sender.Location.X && selected.Location.Y > sender.Location.Y)
+                    {
+                        selected.Location = new Point(selected.Location.X - 1, selected.Location.Y - 1);
+                    }
+                }
+                else if (selected.Location.X != sender.Location.X)
+                {
+                    if (selected.Location.X < sender.Location.X)
+                    {
+                        selected.Location = new Point(selected.Location.X + 1, selected.Location.Y);
+                    }
+                    else
+                    {
+                        selected.Location = new Point(selected.Location.X - 1, selected.Location.Y);
+                    }
+                }
+                else if (selected.Location.Y != sender.Location.Y)
+                {
+                    if (selected.Location.Y < sender.Location.Y)
+                    {
+                        selected.Location = new Point(selected.Location.X, selected.Location.Y + 1);
+                    }
+                    else
+                    {
+                        selected.Location = new Point(selected.Location.X, selected.Location.Y - 1);
+                    }
+                }
             }
         }
 
@@ -137,6 +192,47 @@ namespace SimpleChess
                 else
                 {
                     selected.BackColor = Color.White;
+                }
+            }
+            foreach(ChessPosition pos in selectedMovable)
+            {
+                if (pos.X % 2 != 0)
+                {
+                    if (pos.Y % 2 != 0)
+                    {
+                        if(piecePositions[pos.X][pos.Y].ocupied)
+                        {
+                            piecePositions[pos.X][pos.Y].piece.Piece.BackColor = Color.White;
+
+                        }
+                    }
+                    else
+                    {
+                        if (piecePositions[pos.X][pos.Y].ocupied)
+                        {
+                            piecePositions[pos.X][pos.Y].piece.Piece.BackColor = Color.Black;
+
+                        }
+                    }
+                }
+                else
+                {
+                    if (pos.Y % 2 != 0)
+                    {
+                        if (piecePositions[pos.X][pos.Y].ocupied)
+                        {
+                            piecePositions[pos.X][pos.Y].piece.Piece.BackColor = Color.Black;
+
+                        }
+                    }
+                    else
+                    {
+                        if (piecePositions[pos.X][pos.Y].ocupied)
+                        {
+                            piecePositions[pos.X][pos.Y].piece.Piece.BackColor = Color.Black;
+
+                        }
+                    }
                 }
             }
             foreach (var item in Board.Values)
