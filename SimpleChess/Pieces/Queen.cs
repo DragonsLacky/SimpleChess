@@ -16,7 +16,7 @@ namespace SimpleChess.Pieces
             throw new NotImplementedException();
         }
 
-        public override void getValidMoves()
+        public override List<ChessPosition> getValidMoves(List<ChessPiece> white, List<ChessPiece> black)
         {
             throw new NotImplementedException();
         }
