@@ -19,6 +19,7 @@ namespace SimpleChess
         Dictionary<PictureBox, ChessPiece> BoardPieces;
         List<ChessPiece> white_pieces;
         List<ChessPiece> black_pieces;
+        PictureBox clicked;
         
         public Form1()
         {
@@ -75,23 +76,25 @@ namespace SimpleChess
         }
 
 
-        public void Piece_MouseClick(Object sender, MouseEventArgs e)
+        private void Piece_MouseClick(Object sender, MouseEventArgs e)
         {
+            if(clicked != null)
+            {
+                clicked.BackColor = Board[BoardPieces[clicked].Position.X][BoardPieces[clicked].Position.Y].BackColor;
+            }
             if (e.Button != MouseButtons.Left)
                 return;
             PictureBox Piece = (PictureBox)sender;
+            clicked = Piece;
             Piece.BackColor = Color.AliceBlue;
         }
 
-        public void Board_MouseClick(Object sender, MouseEventArgs e)
+        private void Board_MouseClick(Object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Left)
-                return;
-            PictureBox Piece = (PictureBox)sender;
-            Piece.BackColor = Color.AliceBlue;
+            
         }
 
-        public void InitializePieces()
+        private void InitializePieces()
         {
             InitializePawns();
             InitializeRooks();
@@ -100,7 +103,7 @@ namespace SimpleChess
             InitializeQueen();
         }
 
-        public void InitializePawns()
+        private void InitializePawns()
         {
             int y = 2;
             for (int i = 'A'; i <= 'H'; i++)
@@ -125,7 +128,7 @@ namespace SimpleChess
                 chessPiece.BringToFront();
             }
         }
-        public void InitializeRooks()
+        private void InitializeRooks()
         {
             int y = 1;
             int i = 'A';
@@ -164,7 +167,7 @@ namespace SimpleChess
             chessPiece.BringToFront();
         }
 
-        public void InitializeKnight()
+        private void InitializeKnight()
         {
             int y = 1;
             int i = 'B';
@@ -203,7 +206,7 @@ namespace SimpleChess
             chessPiece.BringToFront();
         }
 
-        public void InitializeBishop()
+        private void InitializeBishop()
         {
             int y = 1;
             int i = 'C';
@@ -241,7 +244,7 @@ namespace SimpleChess
             Controls.Add(chessPiece);
             chessPiece.BringToFront();
         }
-        public void InitializeKing()
+        private void InitializeKing()
         {
             int y = 1;
             int i = 'E';
@@ -263,7 +266,7 @@ namespace SimpleChess
             Controls.Add(chessPiece);
             chessPiece.BringToFront();
         }
-        public void InitializeQueen()
+        private void InitializeQueen()
         {
             int y = 1;
             int i = 'D';
@@ -286,9 +289,9 @@ namespace SimpleChess
             chessPiece.BringToFront();
         }
 
-        public void DrawBoard()
+        private void DrawBoard()
         {
-            int nextPosX = 40;
+            int nextPosX = 60;
             int nextPosY = 80;
             for (int i = 8; i >= 1; i--)
             {
@@ -326,7 +329,7 @@ namespace SimpleChess
                     Controls.Add(Board[(char)j][i]);
                     nextPosX += 75;
                 }
-                nextPosX = 40;
+                nextPosX = 60;
                 nextPosY += 75;
             }
         }
