@@ -8,9 +8,9 @@ using System.Windows.Forms;
 
 namespace SimpleChess.Pieces
 {
-    public class Pawn : ChessPiece
+    public class Knight : ChessPiece
     {
-        public Pawn(char x, int y, ChessColor color, PictureBox piece): base(x, y, color, piece) { }
+        Knight(char x, int y, ChessColor color, PictureBox piece) : base(x, y, color, piece) { }
         public override void getValidMoves()
         {
             throw new NotImplementedException();

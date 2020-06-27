@@ -5,12 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-
 namespace SimpleChess.Pieces
 {
-    public class Pawn : ChessPiece
+    public class Rook : ChessPiece
     {
-        public Pawn(char x, int y, ChessColor color, PictureBox piece): base(x, y, color, piece) { }
+        Rook(char x, int y, ChessColor color, PictureBox piece) : base(x, y, color, piece) { }
         public override void getValidMoves()
         {
             throw new NotImplementedException();
