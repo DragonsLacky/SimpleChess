@@ -34,7 +34,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(666, 306);
+            this.ClientSize = new System.Drawing.Size(566, 169);
             this.Name = "PawnChange";
             this.Text = "PawnChange";
             this.Load += new System.EventHandler(this.PawnChange_Load);

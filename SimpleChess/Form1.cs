@@ -125,12 +125,33 @@ namespace SimpleChess
                     MovesMade.Add(new Moves(BoardPieces[selected], BoardPieces[selected].Position.X, BoardPieces[selected].Position.Y,
                         positionOnBoard[(PictureBox)sender].X, positionOnBoard[(PictureBox)sender].Y));
                     loadMoves();
-
                     piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].ocupied = false;
                     piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].piece = null;
                     piecePositions[positionOnBoard[(PictureBox)sender].X][positionOnBoard[(PictureBox)sender].Y].ocupied = true;
                     piecePositions[positionOnBoard[(PictureBox)sender].X][positionOnBoard[(PictureBox)sender].Y].piece = BoardPieces[selected];
                     BoardPieces[selected].MovePiece(positionOnBoard[(PictureBox)sender].X, positionOnBoard[(PictureBox)sender].Y);
+                    if (BoardPieces[selected].Type == PieceType.PAWN && BoardPieces[selected].Color == ChessColor.WHITE && BoardPieces[selected].Position.Y == 8 ||
+                        BoardPieces[selected].Type == PieceType.PAWN && BoardPieces[selected].Color == ChessColor.BLACK && BoardPieces[selected].Position.Y == 1)
+                    {
+                        PawnChange changePawnForm = new PawnChange(BoardPieces[selected]);
+                        if (changePawnForm.ShowDialog() == DialogResult.OK)
+                        {
+                            piecePositions[positionOnBoard[(PictureBox)sender].X][positionOnBoard[(PictureBox)sender].Y].ocupied = false;
+                            piecePositions[positionOnBoard[(PictureBox)sender].X][positionOnBoard[(PictureBox)sender].Y].piece = null;
+                            if(BoardPieces[selected].Color == ChessColor.WHITE)
+                            {
+                                white_pieces.Remove(BoardPieces[selected]);
+                            }
+                            else
+                            {
+                                black_pieces.Remove(BoardPieces[selected]);
+                            }
+                            Controls.Remove(selected);
+                            BoardPieces.Remove(selected);
+                            InitializeSinglePiece(changePawnForm.chosen.Position.X, changePawnForm.chosen.Position.Y, changePawnForm.chosen.Type, changePawnForm.chosen.Color, changePawnForm.chosen.Color == ChessColor.WHITE ? Color.White : Color.Black);
+                            selected = piecePositions[changePawnForm.chosen.Position.X][changePawnForm.chosen.Position.Y].piece.Piece;
+                        }
+                    }
                     animateMovement((PictureBox)sender);
                     timeElapsed = 0;
                     turn = turn == ChessColor.BLACK ? ChessColor.WHITE : ChessColor.BLACK;

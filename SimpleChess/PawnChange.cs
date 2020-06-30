@@ -14,7 +14,9 @@ namespace SimpleChess
     public partial class PawnChange : Form
     {
         Dictionary<PictureBox, ChessPiece> choices;
-        ChessPiece piece;
+        public ChessPiece piece { get; set; }
+        public ChessPiece chosen { get; set; }
+         
         public PawnChange(ChessPiece piece)
         {
             InitializeComponent();
@@ -50,6 +52,7 @@ namespace SimpleChess
                 }
             }
             Controls.Add(choicePiece);
+            choices.Add(choicePiece, piece);
             choicePiece.Click += choose_onClick;
         }
         private void initializeChoices()
@@ -67,9 +70,8 @@ namespace SimpleChess
         private void choose_onClick(Object sender,EventArgs e) 
         {
             PictureBox chosenPiece = (PictureBox)sender;
-            ((Pawn)piece).Changed = true;
-            ((Pawn)piece).ChangedPiece = choices[chosenPiece];
-            piece.Piece = choices[chosenPiece].Piece;
+            chosen = choices[chosenPiece];
+            DialogResult = DialogResult.OK;
         }
 
         private void PawnChange_Load(object sender, EventArgs e)

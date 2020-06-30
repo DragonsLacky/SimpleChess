@@ -30,7 +30,7 @@ namespace SimpleChess.Pieces
 
         public override List<ChessPosition> getValidMoves(List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions)
         {
-            if(Changed)
+            if (Changed)
             {
                 return ChangedPiece.getValidMoves(white, black, piecePositions);
             }
@@ -91,11 +91,11 @@ namespace SimpleChess.Pieces
                 }
                 if (piece.Color != Color)
                 {
-                    if (Position.X - 1 == piece.Position.X && Position.Y - 1 == piece.Position.Y)
+                    if (Position.X - 1 == piece.Position.X && Position.Y + 1 == piece.Position.Y)
                     {
                         movablePos.Add(piece.Position);
                     }
-                    if (Position.X + 1 == piece.Position.X && Position.Y - 1 == piece.Position.Y)
+                    if (Position.X + 1 == piece.Position.X && Position.Y + 1 == piece.Position.Y)
                     {
                         movablePos.Add(piece.Position);
                     }
