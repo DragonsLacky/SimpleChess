@@ -14,7 +14,7 @@ namespace SimpleChess.Pieces
         public bool Changed { get; set; }
         public ChessPiece ChangedPiece { get; set; }
         public Pawn(char x, int y, ChessColor color, PictureBox piece) : base(x, y, color, piece) { startingPos = true; Type = PieceType.PAWN; Changed = false; ChangedPiece = null; }
-
+        
         public override bool checkValidMove(ChessPosition position, List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions)
         {
             List<ChessPosition> validPositions = getValidMoves(white, black, piecePositions);
@@ -30,6 +30,10 @@ namespace SimpleChess.Pieces
 
         public override List<ChessPosition> getValidMoves(List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions)
         {
+            if(Changed)
+            {
+                return ChangedPiece.getValidMoves(white, black, piecePositions);
+            }
             List<ChessPosition> movablePos = new List<ChessPosition>();
             if(Color == ChessColor.WHITE)
             {
@@ -130,6 +134,11 @@ namespace SimpleChess.Pieces
         {
             Position.X = x;
             Position.Y = y;
+            if(Changed)
+            {
+                Position.X = x;
+                Position.Y = y;
+            }
             startingPos = false;
         }
     }
