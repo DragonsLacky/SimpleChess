@@ -11,7 +11,7 @@ using SimpleChess.Pieces;
 
 namespace SimpleChess
 {
-    enum PieceType { KING, QUEEN, PAWN, BISHOP, ROOK, KNIGHT }
+    public enum PieceType { KING, QUEEN, PAWN, BISHOP, ROOK, KNIGHT }
     public partial class Form1 : Form
     {
         Dictionary<char, Dictionary<int, PictureBox>> Board;
@@ -24,6 +24,8 @@ namespace SimpleChess
         PictureBox selected;
         List<ChessPosition> selectedMovable;
         ChessColor turn = ChessColor.WHITE;
+        private static readonly int turn_time = 60;
+        private int timeElapsed = 0;
         public Form1()
         {
             InitializeComponent();
@@ -82,7 +84,18 @@ namespace SimpleChess
             {
                 DeselectBoard();
             }
+            if(turn != BoardPieces[(PictureBox)sender].Color)
+            {
+                takeEnemyPiece((PictureBox)sender);
+                return;
+            }
             PictureBox Piece = (PictureBox)sender;
+            if(Piece == selected)
+            {
+                DeselectBoard();
+                selected = null;
+                return;
+            }
             selected = Piece;
             if (e.Button != MouseButtons.Left)
                 return;
@@ -98,7 +111,6 @@ namespace SimpleChess
                     Board[pos.X][pos.Y].BackColor = Color.AliceBlue;
                 }
             }
-            
             Piece.BackColor = Color.AliceBlue;
         }
         
@@ -114,11 +126,46 @@ namespace SimpleChess
                     piecePositions[positionOnBoard[(PictureBox)sender].X][positionOnBoard[(PictureBox)sender].Y].piece = BoardPieces[selected];
                     BoardPieces[selected].MovePiece(positionOnBoard[(PictureBox)sender].X, positionOnBoard[(PictureBox)sender].Y);
                     animateMovement((PictureBox)sender);
+                    timeElapsed = 0;
+                    turn = turn == ChessColor.BLACK ? ChessColor.WHITE : ChessColor.BLACK;
                 }
                 DeselectBoard();
             }
             selected = null;
 
+        }
+
+        private void takeEnemyPiece(PictureBox sender)
+        {
+            if (selected != null && (sender) != selected)
+            {
+                if (BoardPieces[selected].checkValidMove(BoardPieces[sender].Position, white_pieces, black_pieces, piecePositions))
+                {
+                    if(BoardPieces[selected].Color != BoardPieces[sender].Color)
+                    {
+                        if(BoardPieces[selected].Color == ChessColor.WHITE)
+                        {
+                            white_pieces.Remove(BoardPieces[sender]);
+                        }
+                        else
+                        {
+                            black_pieces.Remove(BoardPieces[sender]);
+                        }
+                        piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].ocupied = false;
+                        piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].piece = null;
+                        piecePositions[BoardPieces[sender].Position.X][BoardPieces[sender].Position.Y].ocupied = true;
+                        piecePositions[BoardPieces[sender].Position.X][BoardPieces[sender].Position.Y].piece = BoardPieces[selected];
+                        BoardPieces[selected].MovePiece(BoardPieces[sender].Position.X, BoardPieces[sender].Position.Y);
+                        Controls.Remove(sender);
+                        BoardPieces.Remove(sender);
+                        animateMovement(sender);
+                        timeElapsed = 0;
+                        turn = turn == ChessColor.BLACK ? ChessColor.WHITE : ChessColor.BLACK;
+                    }
+                   
+                }
+                DeselectBoard();
+            }
         }
 
         private void animateMovement(PictureBox sender)
@@ -275,226 +322,106 @@ namespace SimpleChess
             InitializeQueen();
         }
 
+        private void InitializeSinglePiece(char i, int y, PieceType type, ChessColor color,Color col)
+        {
+            PictureBox chessPiece = new PictureBox { Location = Board[i][y].Location, Size = Board[i][y].Size, BackColor = Board[i][y].BackColor, BorderStyle = Board[i][y].BorderStyle, Image = PieceImages[type][col] };
+            ChessPiece piece = null;
+            switch (type)
+            {
+                case PieceType.PAWN: piece = new Pawn(i, y, color, chessPiece); break;
+                case PieceType.ROOK: piece = new Rook(i, y, color, chessPiece); break;
+                case PieceType.BISHOP: piece = new Bishop(i, y, color, chessPiece); break;
+                case PieceType.KING: piece = new King(i, y, color, chessPiece); break;
+                case PieceType.KNIGHT: piece = new Knight(i, y, color, chessPiece); break;
+                case PieceType.QUEEN: piece = new Queen(i, y, color, chessPiece); break;
+            }
+            if(color == ChessColor.WHITE)
+            {
+                white_pieces.Add(piece);
+            }
+            else
+            {
+                black_pieces.Add(piece);
+            }
+            BoardPieces.Add(chessPiece, piece);
+            piecePositions[i][y].piece = piece;
+            piecePositions[i][y].ocupied = true;
+            chessPiece.MouseClick += Piece_MouseClick;
+            Controls.Add(chessPiece);
+            chessPiece.BringToFront();
+        }
         private void InitializePawns()
         {
             int y = 2;
             for (int i = 'A'; i <= 'H'; i++)
             {
-                PictureBox chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.PAWN][Color.White] };
-                ChessPiece piece = new Pawn((char)i, y, ChessColor.WHITE, chessPiece);
-                white_pieces.Add(piece);
-                BoardPieces.Add(chessPiece, piece);
-                piecePositions[(char)i][y].piece = piece;
-                piecePositions[(char)i][y].ocupied = true;
-                chessPiece.MouseClick += Piece_MouseClick;
-                Controls.Add(chessPiece);
-                chessPiece.BringToFront();
+                InitializeSinglePiece((char)i, y, PieceType.PAWN, ChessColor.WHITE, Color.White);
             }
             y = 7;
             for (int i = 'A'; i <= 'H'; i++)
             {
-                PictureBox chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.PAWN][Color.Black] };
-                ChessPiece piece = new Pawn((char)i, y, ChessColor.BLACK, chessPiece);
-                black_pieces.Add(piece);
-                BoardPieces.Add(chessPiece, piece);
-                piecePositions[(char)i][y].piece = piece;
-                piecePositions[(char)i][y].ocupied = true;
-                chessPiece.MouseClick += Piece_MouseClick;
-                Controls.Add(chessPiece);
-                chessPiece.BringToFront();
+                InitializeSinglePiece((char)i, y, PieceType.PAWN, ChessColor.BLACK, Color.Black);
             }
         }
         private void InitializeRooks()
         {
             int y = 1;
             int i = 'A';
-            PictureBox chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.ROOK][Color.White] };
-            ChessPiece piece = new Rook((char)i, y, ChessColor.WHITE, chessPiece);
-            white_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
+            InitializeSinglePiece((char)i, y, PieceType.ROOK, ChessColor.WHITE, Color.White);
             i = 'H';
-            chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.ROOK][Color.White] };
-            piece = new Rook((char)i, y, ChessColor.WHITE, chessPiece);
-            white_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
-
+            InitializeSinglePiece((char)i, y, PieceType.ROOK, ChessColor.WHITE, Color.White);
             y = 8;
             i = 'A';
-            chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.ROOK][Color.Black] };
-            piece = new Rook((char)i, y, ChessColor.BLACK, chessPiece);
-            black_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
+            InitializeSinglePiece((char)i, y, PieceType.ROOK, ChessColor.BLACK, Color.Black);
             i = 'H';
-            chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.ROOK][Color.Black] };
-            piece = new Rook((char)i, y, ChessColor.BLACK, chessPiece);
-            black_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
+            InitializeSinglePiece((char)i, y, PieceType.ROOK, ChessColor.BLACK, Color.Black);
         }
 
         private void InitializeKnight()
         {
             int y = 1;
             int i = 'B';
-            PictureBox chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.KNIGHT][Color.White] };
-            ChessPiece piece = new Knight((char)i, y, ChessColor.WHITE, chessPiece);
-            white_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
+            InitializeSinglePiece((char)i, y, PieceType.KNIGHT, ChessColor.WHITE, Color.White);
             i = 'G';
-            chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.KNIGHT][Color.White] };
-            piece = new Knight((char)i, y, ChessColor.WHITE, chessPiece);
-            white_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
-
+            InitializeSinglePiece((char)i, y, PieceType.KNIGHT, ChessColor.WHITE, Color.White);
             y = 8;
             i = 'B';
-            chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.KNIGHT][Color.Black] };
-            piece = new Knight((char)i, y, ChessColor.BLACK, chessPiece);
-            black_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
+            InitializeSinglePiece((char)i, y, PieceType.KNIGHT, ChessColor.BLACK, Color.Black);
             i = 'G';
-            chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.KNIGHT][Color.Black] };
-            piece = new Knight((char)i, y, ChessColor.BLACK, chessPiece);
-            black_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
+            InitializeSinglePiece((char)i, y, PieceType.KNIGHT, ChessColor.BLACK, Color.Black);
         }
 
         private void InitializeBishop()
         {
             int y = 1;
             int i = 'C';
-            PictureBox chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.BISHOP][Color.White] };
-            ChessPiece piece = new Bishop((char)i, y, ChessColor.WHITE, chessPiece);
-            white_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
+            InitializeSinglePiece((char)i, y, PieceType.BISHOP, ChessColor.WHITE, Color.White);
             i = 'F';
-            chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.BISHOP][Color.White] };
-            piece = new Bishop((char)i, y, ChessColor.WHITE, chessPiece);
-            white_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
-
+            InitializeSinglePiece((char)i, y, PieceType.BISHOP, ChessColor.WHITE, Color.White);
             y = 8;
             i = 'C';
-            chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.BISHOP][Color.Black] };
-            piece = new Bishop((char)i, y, ChessColor.BLACK, chessPiece);
-            black_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
+            InitializeSinglePiece((char)i, y, PieceType.BISHOP, ChessColor.BLACK, Color.Black);
             i = 'F';
-            chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.BISHOP][Color.Black] };
-            piece = new Bishop((char)i, y, ChessColor.BLACK, chessPiece);
-            black_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
+            InitializeSinglePiece((char)i, y, PieceType.BISHOP, ChessColor.BLACK, Color.Black);
         }
         private void InitializeKing()
         {
             int y = 1;
             int i = 'E';
-            PictureBox chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.KING][Color.White] };
-            ChessPiece piece = new King((char)i, y, ChessColor.WHITE, chessPiece);
-            white_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
-
+            InitializeSinglePiece((char)i, y, PieceType.KING, ChessColor.WHITE, Color.White);
             y = 8;
             i = 'E';
-            chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.KING][Color.Black] };
-            piece = new King((char)i, y, ChessColor.BLACK, chessPiece);
-            black_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
+            InitializeSinglePiece((char)i, y, PieceType.KING, ChessColor.BLACK, Color.Black);
         }
         private void InitializeQueen()
         {
             int y = 1;
             int i = 'D';
-            PictureBox chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.QUEEN][Color.White] };
-            ChessPiece piece = new Queen((char)i, y, ChessColor.WHITE, chessPiece);
-            white_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
-            
+            InitializeSinglePiece((char)i, y, PieceType.QUEEN, ChessColor.WHITE, Color.White);
+
             y = 8;
             i = 'D';
-            chessPiece = new PictureBox { Location = Board[(char)i][y].Location, Size = Board[(char)i][y].Size, BackColor = Board[(char)i][y].BackColor, BorderStyle = Board[(char)i][y].BorderStyle, Image = PieceImages[PieceType.QUEEN][Color.Black] };
-            piece = new Queen((char)i, y, ChessColor.BLACK, chessPiece);
-            black_pieces.Add(piece);
-            BoardPieces.Add(chessPiece, piece);
-            piecePositions[(char)i][y].piece = piece;
-            piecePositions[(char)i][y].ocupied = true;
-            chessPiece.MouseClick += Piece_MouseClick;
-            Controls.Add(chessPiece);
-            chessPiece.BringToFront();
+            InitializeSinglePiece((char)i, y, PieceType.QUEEN, ChessColor.BLACK, Color.Black);
         }
 
         private void DrawBoard()
@@ -545,6 +472,30 @@ namespace SimpleChess
                 }
                 nextPosX = 60;
                 nextPosY += 75;
+            }
+        }
+
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if(e.KeyChar == 27)
+            {
+                Application.Exit();
+            }
+        }
+
+        private void PlayerTime_Tick(object sender, EventArgs e)
+        {
+            timeElapsed++;
+            if(timeElapsed == 30)
+            {
+                pbTimeLeft.Visible = true;
+            }
+
+            pbTimeLeft.Value = (turn_time - timeElapsed) % 30;
+            if(timeElapsed == turn_time)
+            {
+                timeElapsed = 0;
+                turn = turn == ChessColor.BLACK ? ChessColor.WHITE : ChessColor.BLACK;
             }
         }
     }

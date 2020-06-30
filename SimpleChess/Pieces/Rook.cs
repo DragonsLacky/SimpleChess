@@ -9,7 +9,7 @@ namespace SimpleChess.Pieces
 {
     public class Rook : ChessPiece
     {
-        public Rook(char x, int y, ChessColor color, PictureBox piece) : base(x, y, color, piece) { }
+        public Rook(char x, int y, ChessColor color, PictureBox piece) : base(x, y, color, piece) { Type = PieceType.ROOK; }
 
         public override bool checkValidMove(ChessPosition position, List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions)
         {

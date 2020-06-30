@@ -47,9 +47,11 @@ namespace SimpleChess
         public ChessPosition Position { get; set; }
         public ChessColor Color { get; set; }
         public PictureBox Piece { get; set; }
+        public PieceType Type { get; set; }
         public abstract void MovePiece(char x, int y);
         public abstract List<ChessPosition> getValidMoves(List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions);
         public abstract bool checkValidMove(ChessPosition position, List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions);
+        virtual public  List<ChessPosition> getTakeMoves(List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions) { return getValidMoves(white, black, piecePositions); }
         protected ChessPiece(char x, int y, ChessColor color, PictureBox piece)
         {
             Position = new ChessPosition(x, y);

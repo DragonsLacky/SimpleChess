@@ -9,7 +9,7 @@ namespace SimpleChess.Pieces
 {
     public class Bishop : ChessPiece
     {
-        public Bishop(char x, int y, ChessColor color, PictureBox piece): base(x, y, color, piece) { }
+        public Bishop(char x, int y, ChessColor color, PictureBox piece): base(x, y, color, piece) { Type = PieceType.BISHOP; }
 
         public override bool checkValidMove(ChessPosition position, List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions)
         {
