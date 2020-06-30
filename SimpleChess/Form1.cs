@@ -23,6 +23,7 @@ namespace SimpleChess
         List<ChessPiece> black_pieces;
         PictureBox selected;
         List<ChessPosition> selectedMovable;
+        List<Moves> MovesMade;
         ChessColor turn = ChessColor.WHITE;
         private static readonly int turn_time = 60;
         private int timeElapsed = 0;
@@ -36,6 +37,7 @@ namespace SimpleChess
             piecePositions = new Dictionary<char, Dictionary<int, positionInfo>>();
             white_pieces = new List<ChessPiece>();
             black_pieces = new List<ChessPiece>();
+            MovesMade = new List<Moves>();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -120,6 +122,10 @@ namespace SimpleChess
             {
                 if (BoardPieces[selected].checkValidMove(positionOnBoard[(PictureBox)sender], white_pieces, black_pieces, piecePositions))
                 {
+                    MovesMade.Add(new Moves(BoardPieces[selected], BoardPieces[selected].Position.X, BoardPieces[selected].Position.Y,
+                        positionOnBoard[(PictureBox)sender].X, positionOnBoard[(PictureBox)sender].Y));
+                    loadMoves();
+
                     piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].ocupied = false;
                     piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].piece = null;
                     piecePositions[positionOnBoard[(PictureBox)sender].X][positionOnBoard[(PictureBox)sender].Y].ocupied = true;
@@ -151,6 +157,10 @@ namespace SimpleChess
                         {
                             black_pieces.Remove(BoardPieces[sender]);
                         }
+                        MovesMade.Add(new Moves(BoardPieces[selected], BoardPieces[selected].Position.X, BoardPieces[selected].Position.Y,
+                        BoardPieces[sender].Position.X, BoardPieces[sender].Position.Y));
+                        loadMoves();
+
                         piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].ocupied = false;
                         piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].piece = null;
                         piecePositions[BoardPieces[sender].Position.X][BoardPieces[sender].Position.Y].ocupied = true;
@@ -169,6 +179,8 @@ namespace SimpleChess
 
         private void animateMovement(PictureBox sender)
         {
+            Color color = selected.BackColor;
+            selected.BackColor = Color.Transparent;
             while (selected.Location.X != sender.Location.X || selected.Location.Y != ((PictureBox)sender).Location.Y)
             {
                 if (selected.Location.X != sender.Location.X && selected.Location.Y != ((PictureBox)sender).Location.Y)
@@ -213,6 +225,7 @@ namespace SimpleChess
                     }
                 }
             }
+            selected.BackColor = color;
         }
 
         private void DeselectBoard()
@@ -497,5 +510,13 @@ namespace SimpleChess
                 turn = turn == ChessColor.BLACK ? ChessColor.WHITE : ChessColor.BLACK;
             }
         }
+
+        private void loadMoves()
+        {
+            lbMoves.DataSource = null;
+            lbMoves.DataSource = MovesMade;
+        }
+
+        
     }
 }
