@@ -31,7 +31,6 @@ namespace SimpleChess.Pieces
             List<ChessPosition> validPositions = new List<ChessPosition>();
             validPositions.AddRange(rook.getValidMoves(white, black, piecePositions));
             validPositions.AddRange(bishop.getValidMoves(white, black, piecePositions));
-
             return validPositions;
 
         }

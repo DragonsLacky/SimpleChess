@@ -61,16 +61,16 @@ namespace SimpleChess.Pieces
                     {
                         movablePos.RemoveAt(i);
                     }
-                    if (piece.Color != Color)
+                }
+                if (piece.Color != Color)
+                {
+                    if (Position.X - 1 == piece.Position.X && Position.Y - 1 == piece.Position.Y)
                     {
-                        if (Position.X - 1 == piece.Position.X && Position.Y - 1 == piece.Position.Y)
-                        {
-                            movablePos.Add(piece.Position);
-                        }
-                        if (Position.X + 1 == piece.Position.X && Position.Y - 1 == piece.Position.Y)
-                        {
-                            movablePos.Add(piece.Position);
-                        }
+                        movablePos.Add(piece.Position);
+                    }
+                    if (Position.X + 1 == piece.Position.X && Position.Y - 1 == piece.Position.Y)
+                    {
+                        movablePos.Add(piece.Position);
                     }
                 }
             }
@@ -82,16 +82,16 @@ namespace SimpleChess.Pieces
                     {
                         movablePos.RemoveAt(i);
                     }
-                    if (piece.Color != Color)
+                }
+                if (piece.Color != Color)
+                {
+                    if (Position.X - 1 == piece.Position.X && Position.Y - 1 == piece.Position.Y)
                     {
-                        if (Position.X - 1 == piece.Position.X && Position.Y + 1 == piece.Position.Y)
-                        {
-                            movablePos.Add(piece.Position);
-                        }
-                        if (Position.X + 1 == piece.Position.X && Position.Y + 1 == piece.Position.Y)
-                        {
-                            movablePos.Add(piece.Position);
-                        }
+                        movablePos.Add(piece.Position);
+                    }
+                    if (Position.X + 1 == piece.Position.X && Position.Y - 1 == piece.Position.Y)
+                    {
+                        movablePos.Add(piece.Position);
                     }
                 }
             }
