@@ -11,7 +11,9 @@ namespace SimpleChess.Pieces
     public class Pawn : ChessPiece
     {
         bool startingPos;
-        public Pawn(char x, int y, ChessColor color, PictureBox piece): base(x, y, color, piece) { startingPos = true; Type = PieceType.PAWN; }
+        public bool Changed { get; set; }
+        public ChessPiece ChangedPiece { get; set; }
+        public Pawn(char x, int y, ChessColor color, PictureBox piece) : base(x, y, color, piece) { startingPos = true; Type = PieceType.PAWN; Changed = false; ChangedPiece = null; }
 
         public override bool checkValidMove(ChessPosition position, List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions)
         {
