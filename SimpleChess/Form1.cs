@@ -162,7 +162,6 @@ namespace SimpleChess
                         timeElapsed = 0;
                         turn = turn == ChessColor.BLACK ? ChessColor.WHITE : ChessColor.BLACK;
                     }
-                   
                 }
                 DeselectBoard();
             }
