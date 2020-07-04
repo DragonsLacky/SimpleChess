@@ -1,6 +1,6 @@
 ﻿namespace SimpleChess
 {
-    partial class Form1
+    partial class fSimpleChess
     {
         /// <summary>
         /// Required designer variable.
@@ -34,10 +34,15 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.homeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.v2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.surrenderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lbMoves = new System.Windows.Forms.ListBox();
+            this.btnSurrender = new System.Windows.Forms.Button();
+            this.movesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -49,10 +54,10 @@
             // 
             // pbTimeLeft
             // 
-            this.pbTimeLeft.Location = new System.Drawing.Point(700, 728);
+            this.pbTimeLeft.Location = new System.Drawing.Point(680, 716);
             this.pbTimeLeft.Maximum = 30;
             this.pbTimeLeft.Name = "pbTimeLeft";
-            this.pbTimeLeft.Size = new System.Drawing.Size(389, 21);
+            this.pbTimeLeft.Size = new System.Drawing.Size(409, 21);
             this.pbTimeLeft.Step = 1;
             this.pbTimeLeft.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.pbTimeLeft.TabIndex = 0;
@@ -62,7 +67,6 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.homeToolStripMenuItem,
-            this.editToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
@@ -74,54 +78,105 @@
             // homeToolStripMenuItem
             // 
             this.homeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newGameToolStripMenuItem});
+            this.newGameToolStripMenuItem,
+            this.surrenderToolStripMenuItem,
+            this.exitToolStripMenuItem});
             this.homeToolStripMenuItem.Name = "homeToolStripMenuItem";
             this.homeToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.homeToolStripMenuItem.Text = "Home";
             // 
             // newGameToolStripMenuItem
             // 
+            this.newGameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.v2ToolStripMenuItem});
             this.newGameToolStripMenuItem.Name = "newGameToolStripMenuItem";
-            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newGameToolStripMenuItem.Text = "New Game";
             // 
-            // editToolStripMenuItem
+            // v2ToolStripMenuItem
             // 
-            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
-            this.editToolStripMenuItem.Text = "Edit";
+            this.v2ToolStripMenuItem.Name = "v2ToolStripMenuItem";
+            this.v2ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.v2ToolStripMenuItem.Text = "Player v Player";
+            this.v2ToolStripMenuItem.Click += new System.EventHandler(this.v2ToolStripMenuItem_Click);
+            // 
+            // surrenderToolStripMenuItem
+            // 
+            this.surrenderToolStripMenuItem.Name = "surrenderToolStripMenuItem";
+            this.surrenderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.surrenderToolStripMenuItem.Text = "Surrender";
+            this.surrenderToolStripMenuItem.Click += new System.EventHandler(this.surrenderToolStripMenuItem_Click);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.movesToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
             // 
             // helpToolStripMenuItem
             // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.rulesToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
             // 
             // lbMoves
             // 
+            this.lbMoves.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbMoves.FormattingEnabled = true;
-            this.lbMoves.Location = new System.Drawing.Point(683, 37);
+            this.lbMoves.ItemHeight = 24;
+            this.lbMoves.Location = new System.Drawing.Point(680, 80);
             this.lbMoves.Name = "lbMoves";
-            this.lbMoves.Size = new System.Drawing.Size(406, 472);
+            this.lbMoves.Size = new System.Drawing.Size(409, 556);
             this.lbMoves.TabIndex = 2;
             // 
-            // Form1
+            // btnSurrender
+            // 
+            this.btnSurrender.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSurrender.Location = new System.Drawing.Point(792, 656);
+            this.btnSurrender.Name = "btnSurrender";
+            this.btnSurrender.Size = new System.Drawing.Size(185, 40);
+            this.btnSurrender.TabIndex = 4;
+            this.btnSurrender.Text = "Surrender";
+            this.btnSurrender.UseVisualStyleBackColor = true;
+            this.btnSurrender.Visible = false;
+            this.btnSurrender.Click += new System.EventHandler(this.btnSurrender_Click);
+            // 
+            // movesToolStripMenuItem
+            // 
+            this.movesToolStripMenuItem.Name = "movesToolStripMenuItem";
+            this.movesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.movesToolStripMenuItem.Text = "Moves";
+            this.movesToolStripMenuItem.Click += new System.EventHandler(this.movesToolStripMenuItem_Click);
+            // 
+            // rulesToolStripMenuItem
+            // 
+            this.rulesToolStripMenuItem.Name = "rulesToolStripMenuItem";
+            this.rulesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rulesToolStripMenuItem.Text = "Rules";
+            // 
+            // fSimpleChess
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1101, 749);
+            this.Controls.Add(this.btnSurrender);
             this.Controls.Add(this.lbMoves);
             this.Controls.Add(this.pbTimeLeft);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "fSimpleChess";
+            this.Text = "SimpleChess";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             this.menuStrip1.ResumeLayout(false);
@@ -138,10 +193,15 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem homeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newGameToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ListBox lbMoves;
+        private System.Windows.Forms.ToolStripMenuItem surrenderToolStripMenuItem;
+        private System.Windows.Forms.Button btnSurrender;
+        private System.Windows.Forms.ToolStripMenuItem v2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem movesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rulesToolStripMenuItem;
     }
 }
 

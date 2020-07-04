@@ -10,10 +10,8 @@ namespace SimpleChess.Pieces
 {
     public class Pawn : ChessPiece
     {
-        bool startingPos;
-        public bool Changed { get; set; }
-        public ChessPiece ChangedPiece { get; set; }
-        public Pawn(char x, int y, ChessColor color, PictureBox piece) : base(x, y, color, piece) { startingPos = true; Type = PieceType.PAWN; Changed = false; ChangedPiece = null; }
+        public bool startingPos { get; set; }
+        public Pawn(char x, int y, ChessColor color, PictureBox piece) : base(x, y, color, piece) { startingPos = true; Type = PieceType.PAWN; }
         
         public override bool checkValidMove(ChessPosition position, List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions)
         {
@@ -30,10 +28,6 @@ namespace SimpleChess.Pieces
 
         public override List<ChessPosition> getValidMoves(List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions)
         {
-            if (Changed)
-            {
-                return ChangedPiece.getValidMoves(white, black, piecePositions);
-            }
             List<ChessPosition> movablePos = new List<ChessPosition>();
             if(Color == ChessColor.WHITE)
             {
@@ -130,15 +124,14 @@ namespace SimpleChess.Pieces
             return movablePos;
         }
 
+        public override string getType()
+        {
+            return "Pawn";
+        }
         public override void MovePiece(char x, int y)
         {
             Position.X = x;
             Position.Y = y;
-            if(Changed)
-            {
-                Position.X = x;
-                Position.Y = y;
-            }
             startingPos = false;
         }
     }

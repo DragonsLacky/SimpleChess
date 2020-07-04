@@ -49,6 +49,11 @@ namespace SimpleChess.Pieces
 
             return validPositions;
         }
+        
+        public override string getType()
+        {
+            return "Knight";
+        }
 
         public override void MovePiece(char x, int y)
         {

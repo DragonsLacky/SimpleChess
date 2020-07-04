@@ -12,7 +12,7 @@ using SimpleChess.Pieces;
 namespace SimpleChess
 {
     public enum PieceType { KING, QUEEN, PAWN, BISHOP, ROOK, KNIGHT }
-    public partial class Form1 : Form
+    public partial class fSimpleChess : Form
     {
         Dictionary<char, Dictionary<int, PictureBox>> Board;
         Dictionary<PieceType, Dictionary<Color, Image>> PieceImages;
@@ -25,9 +25,10 @@ namespace SimpleChess
         List<ChessPosition> selectedMovable;
         List<Moves> MovesMade;
         ChessColor turn = ChessColor.WHITE;
+        Dictionary<ChessColor,King> Kings = new Dictionary<ChessColor, King>();
         private static readonly int turn_time = 60;
         private int timeElapsed = 0;
-        public Form1()
+        public fSimpleChess()
         {
             InitializeComponent();
             Board = new Dictionary<char, Dictionary<int, PictureBox>>();
@@ -38,6 +39,10 @@ namespace SimpleChess
             white_pieces = new List<ChessPiece>();
             black_pieces = new List<ChessPiece>();
             MovesMade = new List<Moves>();
+            Moves move = new Moves(null, 'A', 1, 'A', 1);
+            move.init = true;
+            MovesMade.Add(move);
+            loadMoves();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -88,11 +93,12 @@ namespace SimpleChess
             }
             if(turn != BoardPieces[(PictureBox)sender].Color)
             {
-                takeEnemyPiece((PictureBox)sender);
+                TakeEnemyPiece((PictureBox)sender);
                 return;
             }
             PictureBox Piece = (PictureBox)sender;
-            if(Piece == selected)
+            
+            if (Piece == selected)
             {
                 DeselectBoard();
                 selected = null;
@@ -101,6 +107,10 @@ namespace SimpleChess
             selected = Piece;
             if (e.Button != MouseButtons.Left)
                 return;
+            if (Kings[BoardPieces[selected].Color].CheckMate(white_pieces, black_pieces, piecePositions))
+            {
+                btnSurrender.Visible = true;
+            }
             selectedMovable = BoardPieces[selected].getValidMoves(white_pieces, black_pieces, piecePositions);
             foreach (ChessPosition pos in selectedMovable)
             {
@@ -120,15 +130,69 @@ namespace SimpleChess
         {
             if(selected != null && ((PictureBox)sender) != selected)
             {
+                if (BoardPieces[selected].Type != PieceType.KING && Kings[BoardPieces[selected].Color].Check(white_pieces, black_pieces, piecePositions))
+                {
+                    bool isPawnAtStart = false;
+                    positionInfo startPos = piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y];
+                    positionInfo endPos = piecePositions[positionOnBoard[(PictureBox)sender].X][positionOnBoard[(PictureBox)sender].Y];
+
+                    startPos.ocupied = false;
+                    startPos.piece = null;
+                    endPos.ocupied = true;
+                    endPos.piece = BoardPieces[selected];
+                    if (BoardPieces[selected].Type == PieceType.PAWN)
+                    {
+                        isPawnAtStart = ((Pawn)BoardPieces[selected]).startingPos;
+                    }
+                    BoardPieces[selected].MovePiece(endPos.piece.Position.X, endPos.piece.Position.Y);
+                    
+                    if(Kings[BoardPieces[selected].Color].Check(white_pieces, black_pieces, piecePositions))
+                    {
+                        startPos.ocupied = true;
+                        startPos.piece = BoardPieces[selected];
+                        endPos.ocupied = false;
+                        endPos.piece = null;
+                        BoardPieces[selected].MovePiece(startPos.piece.Position.X, startPos.piece.Position.Y);
+                        if (BoardPieces[selected].Type == PieceType.PAWN && isPawnAtStart)
+                        {
+                            ((Pawn)BoardPieces[selected]).startingPos = true;
+                        }
+                        DeselectBoard();
+                        return;
+                    }
+                }
                 if (BoardPieces[selected].checkValidMove(positionOnBoard[(PictureBox)sender], white_pieces, black_pieces, piecePositions))
                 {
+                    
+                    positionInfo startPos = piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y];
+                    positionInfo endPos = piecePositions[positionOnBoard[(PictureBox)sender].X][positionOnBoard[(PictureBox)sender].Y];
+                    bool isPawnAtStart = false;
+                    if (BoardPieces[selected].Type == PieceType.PAWN)
+                    {
+                        isPawnAtStart = ((Pawn)BoardPieces[selected]).startingPos;
+                    }
+                    startPos.ocupied = false;
+                    startPos.piece = null;
+                    endPos.ocupied = true;
+                    endPos.piece = BoardPieces[selected];
+                    BoardPieces[selected].MovePiece(endPos.piece.Position.X, endPos.piece.Position.Y);
+                    if (BoardPieces[selected].Type != PieceType.KING && Kings[BoardPieces[selected].Color].Check(white_pieces, black_pieces, piecePositions))
+                    {
+                        startPos.ocupied = true;
+                        startPos.piece = BoardPieces[selected];
+                        endPos.ocupied = false;
+                        endPos.piece = null;
+                        BoardPieces[selected].MovePiece(startPos.piece.Position.X, startPos.piece.Position.Y);
+                        if (BoardPieces[selected].Type == PieceType.PAWN)
+                        {
+                            ((Pawn)BoardPieces[selected]).startingPos = isPawnAtStart;
+                        }
+                        DeselectBoard();
+                        return;
+                    }
                     MovesMade.Add(new Moves(BoardPieces[selected], BoardPieces[selected].Position.X, BoardPieces[selected].Position.Y,
                         positionOnBoard[(PictureBox)sender].X, positionOnBoard[(PictureBox)sender].Y));
                     loadMoves();
-                    piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].ocupied = false;
-                    piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].piece = null;
-                    piecePositions[positionOnBoard[(PictureBox)sender].X][positionOnBoard[(PictureBox)sender].Y].ocupied = true;
-                    piecePositions[positionOnBoard[(PictureBox)sender].X][positionOnBoard[(PictureBox)sender].Y].piece = BoardPieces[selected];
                     BoardPieces[selected].MovePiece(positionOnBoard[(PictureBox)sender].X, positionOnBoard[(PictureBox)sender].Y);
                     if (BoardPieces[selected].Type == PieceType.PAWN && BoardPieces[selected].Color == ChessColor.WHITE && BoardPieces[selected].Position.Y == 8 ||
                         BoardPieces[selected].Type == PieceType.PAWN && BoardPieces[selected].Color == ChessColor.BLACK && BoardPieces[selected].Position.Y == 1)
@@ -152,7 +216,22 @@ namespace SimpleChess
                             selected = piecePositions[changePawnForm.chosen.Position.X][changePawnForm.chosen.Position.Y].piece.Piece;
                         }
                     }
-                    animateMovement((PictureBox)sender);
+                    if(Kings[BoardPieces[selected].Color == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE].Check(white_pieces, black_pieces, piecePositions))
+                    {
+                        if(Kings[BoardPieces[selected].Color == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE].victoryCondition(white_pieces, black_pieces, piecePositions))
+                        {
+                            Victory victoryForm = new Victory(BoardPieces[selected].Color == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE);
+                            if (victoryForm.ShowDialog() == DialogResult.OK)
+                            {
+                                NewGame();
+                            }
+                            else
+                            {
+                                Application.Exit();
+                            }
+                        }
+                    }
+                    AnimateMovement((PictureBox)sender);
                     timeElapsed = 0;
                     turn = turn == ChessColor.BLACK ? ChessColor.WHITE : ChessColor.BLACK;
                 }
@@ -162,7 +241,7 @@ namespace SimpleChess
 
         }
 
-        private void takeEnemyPiece(PictureBox sender)
+        private void TakeEnemyPiece(PictureBox sender)
         {
             if (selected != null && (sender) != selected)
             {
@@ -178,10 +257,12 @@ namespace SimpleChess
                         {
                             black_pieces.Remove(BoardPieces[sender]);
                         }
-                        MovesMade.Add(new Moves(BoardPieces[selected], BoardPieces[selected].Position.X, BoardPieces[selected].Position.Y,
-                        BoardPieces[sender].Position.X, BoardPieces[sender].Position.Y));
+                        Moves move = new Moves(BoardPieces[selected], BoardPieces[selected].Position.X, BoardPieces[selected].Position.Y,BoardPieces[sender].Position.X, BoardPieces[sender].Position.Y);
+                        move.TakenType = BoardPieces[sender].getType();
+                        move.PieceTaken = true;
+                        MovesMade.Add(move);
                         loadMoves();
-
+                        
                         piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].ocupied = false;
                         piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].piece = null;
                         piecePositions[BoardPieces[sender].Position.X][BoardPieces[sender].Position.Y].ocupied = true;
@@ -189,7 +270,44 @@ namespace SimpleChess
                         BoardPieces[selected].MovePiece(BoardPieces[sender].Position.X, BoardPieces[sender].Position.Y);
                         Controls.Remove(sender);
                         BoardPieces.Remove(sender);
-                        animateMovement(sender);
+                        AnimateMovement(sender);
+                        if (BoardPieces[selected].Type == PieceType.PAWN && BoardPieces[selected].Color == ChessColor.WHITE && BoardPieces[selected].Position.Y == 8 ||
+                        BoardPieces[selected].Type == PieceType.PAWN && BoardPieces[selected].Color == ChessColor.BLACK && BoardPieces[selected].Position.Y == 1)
+                        {
+                            PawnChange changePawnForm = new PawnChange(BoardPieces[selected]);
+                            if (changePawnForm.ShowDialog() == DialogResult.OK)
+                            {
+                                piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].ocupied = false;
+                                piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y].piece = null;
+                                if (BoardPieces[selected].Color == ChessColor.WHITE)
+                                {
+                                    white_pieces.Remove(BoardPieces[selected]);
+                                }
+                                else
+                                {
+                                    black_pieces.Remove(BoardPieces[selected]);
+                                }
+                                Controls.Remove(selected);
+                                BoardPieces.Remove(selected);
+                                InitializeSinglePiece(changePawnForm.chosen.Position.X, changePawnForm.chosen.Position.Y, changePawnForm.chosen.Type, changePawnForm.chosen.Color, changePawnForm.chosen.Color == ChessColor.WHITE ? Color.White : Color.Black);
+                                selected = piecePositions[changePawnForm.chosen.Position.X][changePawnForm.chosen.Position.Y].piece.Piece;
+                            }
+                        }
+                        if (Kings[BoardPieces[selected].Color == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE].Check(white_pieces, black_pieces, piecePositions))
+                        {
+                            if (Kings[BoardPieces[selected].Color == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE].victoryCondition(white_pieces, black_pieces, piecePositions))
+                            {
+                                Victory victoryForm = new Victory(turn);
+                                if (victoryForm.ShowDialog() == DialogResult.OK)
+                                {
+                                    NewGame();
+                                }
+                                else
+                                {
+                                    Application.Exit();
+                                }
+                            }
+                        }
                         timeElapsed = 0;
                         turn = turn == ChessColor.BLACK ? ChessColor.WHITE : ChessColor.BLACK;
                     }
@@ -198,7 +316,7 @@ namespace SimpleChess
             }
         }
 
-        private void animateMovement(PictureBox sender)
+        private void AnimateMovement(PictureBox sender)
         {
             Color color = selected.BackColor;
             selected.BackColor = Color.Transparent;
@@ -256,22 +374,22 @@ namespace SimpleChess
             {
                 if (BoardPieces[selected].Position.Y % 2 != 0)
                 {
-                    selected.BackColor = Color.White;
+                    selected.BackColor = Color.Black;
                 }
                 else
                 {
-                    selected.BackColor = Color.Black;
+                    selected.BackColor = Color.White;
                 }
             }
             else
             {
                 if (BoardPieces[selected].Position.Y % 2 != 0)
                 {
-                    selected.BackColor = Color.Black;
+                    selected.BackColor = Color.White;
                 }
                 else
                 {
-                    selected.BackColor = Color.White;
+                    selected.BackColor = Color.Black;
                 }
             }
             foreach(ChessPosition pos in selectedMovable)
@@ -282,7 +400,7 @@ namespace SimpleChess
                     {
                         if(piecePositions[pos.X][pos.Y].ocupied)
                         {
-                            piecePositions[pos.X][pos.Y].piece.Piece.BackColor = Color.White;
+                            piecePositions[pos.X][pos.Y].piece.Piece.BackColor = Color.Black;
 
                         }
                     }
@@ -290,7 +408,7 @@ namespace SimpleChess
                     {
                         if (piecePositions[pos.X][pos.Y].ocupied)
                         {
-                            piecePositions[pos.X][pos.Y].piece.Piece.BackColor = Color.Black;
+                            piecePositions[pos.X][pos.Y].piece.Piece.BackColor = Color.White;
 
                         }
                     }
@@ -301,7 +419,7 @@ namespace SimpleChess
                     {
                         if (piecePositions[pos.X][pos.Y].ocupied)
                         {
-                            piecePositions[pos.X][pos.Y].piece.Piece.BackColor = Color.Black;
+                            piecePositions[pos.X][pos.Y].piece.Piece.BackColor = Color.White;
 
                         }
                     }
@@ -323,22 +441,22 @@ namespace SimpleChess
                     {
                         if (positionOnBoard[picbox].Y % 2 != 0)
                         {
-                            picbox.BackColor = Color.White;
+                            picbox.BackColor = Color.Black;
                         }
                         else
                         {
-                            picbox.BackColor = Color.Black;
+                            picbox.BackColor = Color.White;
                         }
                     }
                     else
                     {
                         if (positionOnBoard[picbox].Y % 2 != 0)
                         {
-                            picbox.BackColor = Color.Black;
+                            picbox.BackColor = Color.White;
                         }
                         else
                         {
-                            picbox.BackColor = Color.White;
+                            picbox.BackColor = Color.Black;
                         }
                     }
                 }
@@ -375,6 +493,10 @@ namespace SimpleChess
             else
             {
                 black_pieces.Add(piece);
+            }
+            if(piece.Type == PieceType.KING)
+            {
+                Kings.Add(piece.Color,(King)piece);
             }
             BoardPieces.Add(chessPiece, piece);
             piecePositions[i][y].piece = piece;
@@ -459,7 +581,7 @@ namespace SimpleChess
 
         private void DrawBoard()
         {
-            int nextPosX = 60;
+            int nextPosX = 50;
             int nextPosY = 80;
             for (int i = 8; i >= 1; i--)
             {
@@ -481,29 +603,29 @@ namespace SimpleChess
                     {
                         if(i % 2 != 0)
                         {
-                            Board[(char)j][i].BackColor = Color.White;
+                            Board[(char)j][i].BackColor = Color.Black;
                         }
                         else
                         {
-                            Board[(char)j][i].BackColor = Color.Black;
+                            Board[(char)j][i].BackColor = Color.White;
                         }
                     }
                     else
                     {
                         if (i % 2 != 0)
                         {
-                            Board[(char)j][i].BackColor = Color.Black;
+                            Board[(char)j][i].BackColor = Color.White;
                         }
                         else
                         {
-                            Board[(char)j][i].BackColor = Color.White;
+                            Board[(char)j][i].BackColor = Color.Black;
                         }
                     }
                     Controls.Add(Board[(char)j][i]);
                     positionOnBoard.Add(Board[(char)j][i], new ChessPosition((char)j,i));
                     nextPosX += 75;
                 }
-                nextPosX = 60;
+                nextPosX = 50;
                 nextPosY += 75;
             }
         }
@@ -528,6 +650,7 @@ namespace SimpleChess
             if(timeElapsed == turn_time)
             {
                 timeElapsed = 0;
+                pbTimeLeft.Visible = false;
                 turn = turn == ChessColor.BLACK ? ChessColor.WHITE : ChessColor.BLACK;
             }
         }
@@ -538,6 +661,74 @@ namespace SimpleChess
             lbMoves.DataSource = MovesMade;
         }
 
-        
+        private void NewGame()
+        {
+            foreach(PictureBox pictureBox in BoardPieces.Keys)
+            {
+                Controls.Remove(pictureBox);
+            }
+            BoardPieces = new Dictionary<PictureBox, ChessPiece>();
+            foreach (var i in piecePositions.Values)
+            {
+                foreach(positionInfo info in i.Values)
+                {
+                    info.ocupied = false;
+                    info.piece = null;
+                }
+            }
+            white_pieces = new List<ChessPiece>();
+            black_pieces = new List<ChessPiece>();
+            Kings = new Dictionary<ChessColor, King>();
+            turn = ChessColor.WHITE;
+            timeElapsed = 0;
+            pbTimeLeft.Visible = false;
+            InitializePieces();
+            MovesMade = new List<Moves>();
+            Moves move = new Moves(null, 'A', 1, 'A', 1);
+            move.init = true;
+            MovesMade.Add(move);
+            loadMoves();
+        }
+
+        private void btnSurrender_Click(object sender, EventArgs e)
+        {
+            Victory victoryForm = new Victory(turn);
+            if(victoryForm.ShowDialog() == DialogResult.OK)
+            {
+                NewGame();
+            }
+            else
+            {
+                Application.Exit();
+            }
+        }
+
+        private void v2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewGame();
+        }
+
+        private void surrenderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Victory victoryForm = new Victory(turn);
+            if (victoryForm.ShowDialog() == DialogResult.OK)
+            {
+                NewGame();
+            }
+            else
+            {
+                Application.Exit();
+            }
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void movesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            lbMoves.Visible = !lbMoves.Visible;
+        }
     }
 }

@@ -24,6 +24,10 @@ namespace SimpleChess.Pieces
             return false;
         }
 
+        public override string getType()
+        {
+            return "Queen";
+        }
         public override List<ChessPosition> getValidMoves(List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions)
         {
             ChessPiece rook = new Rook(Position.X, Position.Y,Color, Piece);
