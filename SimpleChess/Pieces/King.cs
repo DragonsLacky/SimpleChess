@@ -44,7 +44,15 @@ namespace SimpleChess.Pieces
                 {
                     validPositions.RemoveAt(i);
                     i--;
+                    continue;
                 }
+
+                if(Occupied[validPositions[i].X][validPositions[i].Y].ocupied)
+                {
+                    validPositions.RemoveAt(i);
+                    i--;
+                }
+
             }
 
             if (this.Color == ChessColor.BLACK)

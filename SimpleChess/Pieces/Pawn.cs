@@ -103,23 +103,15 @@ namespace SimpleChess.Pieces
         public override List<ChessPosition> getTakeMoves(List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> piecePositions)
         {
             List<ChessPosition> movablePos = new List<ChessPosition>();
-            foreach (ChessPiece piece in white)
+            if (Color == ChessColor.BLACK)
             {
-                if (piece.Color != Color)
-                {
-                    movablePos.Add(new ChessPosition((char)(Position.X - 1), Position.Y - 1));
-                    movablePos.Add(new ChessPosition((char)(Position.X + 1), Position.Y - 1));
-                }
+                movablePos.Add(new ChessPosition((char)(Position.X - 1), Position.Y - 1));
+                movablePos.Add(new ChessPosition((char)(Position.X + 1), Position.Y - 1));
             }
-            foreach (ChessPiece piece in black)
+            if (Color == ChessColor.WHITE)
             {
-                if (piece.Color != Color)
-                {
-
-                    movablePos.Add(new ChessPosition((char)(Position.X - 1), Position.Y + 1));
-                    movablePos.Add(new ChessPosition((char)(Position.X + 1), Position.Y + 1));
-                   
-                }
+                movablePos.Add(new ChessPosition((char)(Position.X - 1), Position.Y + 1));
+                movablePos.Add(new ChessPosition((char)(Position.X + 1), Position.Y + 1));
             }
             return movablePos;
         }
