@@ -105,7 +105,8 @@ namespace SimpleChess.Pieces
         public override bool victoryCondition(List<ChessPiece> white, List<ChessPiece> black, Dictionary<char, Dictionary<int, positionInfo>> Occupied)
         {
             List<ChessPiece> checkedPieces = getCheckPieces(white, black, Occupied);
-            if(CheckMate(white,black,Occupied))
+            
+            if (CheckMate(white,black,Occupied))
             {
                 if(checkedPieces.Count > 1)
                 {
@@ -117,11 +118,19 @@ namespace SimpleChess.Pieces
                     {
                         foreach (ChessPosition pos in getMovesToKing(piece))
                         {
-                            foreach(ChessPiece allyPiece in Color == ChessColor.WHITE ? white : black)
+                            foreach (ChessPiece allyPiece in Color == ChessColor.WHITE ? white : black)
                             {
-                                foreach (ChessPosition pos1 in allyPiece.getValidMoves(white,black,Occupied))
+                                if(allyPiece.Type == PieceType.KING)
                                 {
-                                    if(pos == pos1)
+                                    continue;
+                                }
+                                foreach (ChessPosition pos1 in allyPiece.getValidMoves(white, black, Occupied))
+                                {
+                                    if (piece.Position == pos1)
+                                    {
+                                        return false;
+                                    }
+                                    if (pos == pos1)
                                     {
                                         return false;
                                     }
@@ -148,12 +157,9 @@ namespace SimpleChess.Pieces
             List<ChessPosition> pieceMoves = new List<ChessPosition>();
             if(piece.Type == PieceType.BISHOP)
             {
-                for (int i = piece.Position.X; i <= Position.X ? i < Position.X : i > Position.X; i = i < Position.X ? i + 1 : i - 1)
+                for (int i = piece.Position.X, j = piece.Position.Y; piece.Position.X < Position.X ? (i < Position.X) : (i > Position.X) && piece.Position.Y < Position.Y ? (j < Position.Y) : (j > Position.Y); i = piece.Position.X < Position.X ? (i + 1) : (i - 1), j = piece.Position.Y < Position.Y ? (j + 1) : (j - 1))
                 {
-                    for (int j = piece.Position.Y; j <= Position.Y ? i < Position.Y : i > Position.Y; i = i < Position.Y ? i + 1 : i - 1)
-                    {
-                        pieceMoves.Add(new ChessPosition((char)i, j));
-                    }
+                    pieceMoves.Add(new ChessPosition((char)i, j));
                 }
             }
             if(piece.Type == PieceType.ROOK)
@@ -187,12 +193,10 @@ namespace SimpleChess.Pieces
                         pieceMoves.Add(new ChessPosition((char)i, Position.Y));
 
                     }
-                for (int i = piece.Position.X; i <= Position.X ? i < Position.X : i > Position.X; i = i < Position.X ? i + 1 : i - 1)
+                
+                for (int i = piece.Position.X, j = piece.Position.Y; piece.Position.X < Position.X ? (i < Position.X) : (i > Position.X) && piece.Position.Y < Position.Y ? (j < Position.Y) : (j > Position.Y); i = piece.Position.X < Position.X ?( i + 1 ): (i - 1), j = piece.Position.Y < Position.Y ? (j + 1) : (j - 1))
                 {
-                    for (int j = piece.Position.Y; j <= Position.Y ? i < Position.Y : i > Position.Y; i = i < Position.Y ? i + 1 : i - 1)
-                    {
-                        pieceMoves.Add(new ChessPosition((char)i, j));
-                    }
+                    pieceMoves.Add(new ChessPosition((char)i, j));
                 }
 
             }

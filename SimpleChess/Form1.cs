@@ -244,6 +244,7 @@ namespace SimpleChess
 
         private void TakeEnemyPiece(PictureBox sender)
         {
+            bool pass = false;
             if (selected != null && (sender) != selected)
             {
                 if (BoardPieces[selected].Type != PieceType.KING && Kings[BoardPieces[selected].Color].Check(white_pieces, black_pieces, piecePositions))
@@ -290,13 +291,13 @@ namespace SimpleChess
                         }
                         DeselectBoard();
                         return;
-                    }
+                    }else
+                    pass = true;
                 }
-                if (BoardPieces[selected].checkValidMove(BoardPieces[sender].Position, white_pieces, black_pieces, piecePositions))
+                if (pass || BoardPieces[selected].checkValidMove(BoardPieces[sender].Position, white_pieces, black_pieces, piecePositions))
                 {
                     if(BoardPieces[selected].Color != BoardPieces[sender].Color)
                     {
-                        //
                         positionInfo startPos = piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y];
                         positionInfo endPos = piecePositions[BoardPieces[sender].Position.X][BoardPieces[sender].Position.Y];
                         bool isPawnAtStart = false;
@@ -339,7 +340,6 @@ namespace SimpleChess
                             DeselectBoard();
                             return;
                         }
-                        //
                         Moves move = new Moves(BoardPieces[selected], BoardPieces[selected].Position.X, BoardPieces[selected].Position.Y, BoardPieces[sender].Position.X, BoardPieces[sender].Position.Y);
                         move.TakenType = BoardPieces[sender].getType();
                         move.PieceTaken = true;
