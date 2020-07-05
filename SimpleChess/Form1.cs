@@ -56,10 +56,12 @@ namespace SimpleChess
             if(playModeForm.ShowDialog() == DialogResult.Yes)
             {
                 computer_enabled = false;
+                timeElapsed = 0;
             }
             else
             {
                 computer_enabled = true;
+                timeElapsed = 0;
             }
 
             loadImages();
@@ -236,6 +238,7 @@ namespace SimpleChess
                             selected = piecePositions[changePawnForm.chosen.Position.X][changePawnForm.chosen.Position.Y].piece.Piece;
                         }
                     }
+                    AnimateMovement((PictureBox)sender);
                     if(Kings[BoardPieces[selected].Color == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE].Check(white_pieces, black_pieces, piecePositions))
                     {
                         if(Kings[BoardPieces[selected].Color == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE].victoryCondition(white_pieces, black_pieces, piecePositions))
@@ -252,7 +255,6 @@ namespace SimpleChess
                             }
                         }
                     }
-                    AnimateMovement((PictureBox)sender);
                     timeElapsed = 0;
                     turn = turn == ChessColor.BLACK ? ChessColor.WHITE : ChessColor.BLACK;
                 }
@@ -874,6 +876,12 @@ namespace SimpleChess
         {
             Rules rulesForm = new Rules();
             rulesForm.ShowDialog();
+        }
+
+        private void playerVComputerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            computer_enabled = true;
+            NewGame();
         }
     }
 }

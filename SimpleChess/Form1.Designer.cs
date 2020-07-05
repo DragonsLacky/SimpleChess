@@ -43,6 +43,7 @@
             this.rulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lbMoves = new System.Windows.Forms.ListBox();
             this.btnSurrender = new System.Windows.Forms.Button();
+            this.playerVComputerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -88,29 +89,30 @@
             // newGameToolStripMenuItem
             // 
             this.newGameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.v2ToolStripMenuItem});
+            this.v2ToolStripMenuItem,
+            this.playerVComputerToolStripMenuItem});
             this.newGameToolStripMenuItem.Name = "newGameToolStripMenuItem";
-            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.newGameToolStripMenuItem.Text = "New Game";
             // 
             // v2ToolStripMenuItem
             // 
             this.v2ToolStripMenuItem.Name = "v2ToolStripMenuItem";
-            this.v2ToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.v2ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.v2ToolStripMenuItem.Text = "Player v Player";
             this.v2ToolStripMenuItem.Click += new System.EventHandler(this.v2ToolStripMenuItem_Click);
             // 
             // surrenderToolStripMenuItem
             // 
             this.surrenderToolStripMenuItem.Name = "surrenderToolStripMenuItem";
-            this.surrenderToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.surrenderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.surrenderToolStripMenuItem.Text = "Surrender";
             this.surrenderToolStripMenuItem.Click += new System.EventHandler(this.surrenderToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -140,7 +142,7 @@
             // rulesToolStripMenuItem
             // 
             this.rulesToolStripMenuItem.Name = "rulesToolStripMenuItem";
-            this.rulesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rulesToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
             this.rulesToolStripMenuItem.Text = "Rules";
             this.rulesToolStripMenuItem.Click += new System.EventHandler(this.rulesToolStripMenuItem_Click);
             // 
@@ -165,6 +167,13 @@
             this.btnSurrender.UseVisualStyleBackColor = true;
             this.btnSurrender.Visible = false;
             this.btnSurrender.Click += new System.EventHandler(this.btnSurrender_Click);
+            // 
+            // playerVComputerToolStripMenuItem
+            // 
+            this.playerVComputerToolStripMenuItem.Name = "playerVComputerToolStripMenuItem";
+            this.playerVComputerToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.playerVComputerToolStripMenuItem.Text = "Player v Computer";
+            this.playerVComputerToolStripMenuItem.Click += new System.EventHandler(this.playerVComputerToolStripMenuItem_Click);
             // 
             // fSimpleChess
             // 
@@ -203,6 +212,7 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem movesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rulesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem playerVComputerToolStripMenuItem;
     }
 }
 
