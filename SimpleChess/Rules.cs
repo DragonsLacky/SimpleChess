@@ -31,6 +31,9 @@ namespace SimpleChess
                 "make a move that eliminates the threat of capture and cannot leave the king in check. Checkmate happens\n" +
                 " when a king is placed in check and there is no legal move to escape. Checkmate ends the game and the \n " +
                 "side whose king was checkmated looses.";
+            label1.Text = victoryCondition;
+            label2.Text = CheckMate;
+            label3.Text = generalExplanation;
         }
     }
 }

@@ -38,11 +38,11 @@
             this.surrenderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.movesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lbMoves = new System.Windows.Forms.ListBox();
             this.btnSurrender = new System.Windows.Forms.Button();
-            this.movesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rulesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -90,27 +90,27 @@
             this.newGameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.v2ToolStripMenuItem});
             this.newGameToolStripMenuItem.Name = "newGameToolStripMenuItem";
-            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.newGameToolStripMenuItem.Text = "New Game";
             // 
             // v2ToolStripMenuItem
             // 
             this.v2ToolStripMenuItem.Name = "v2ToolStripMenuItem";
-            this.v2ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.v2ToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.v2ToolStripMenuItem.Text = "Player v Player";
             this.v2ToolStripMenuItem.Click += new System.EventHandler(this.v2ToolStripMenuItem_Click);
             // 
             // surrenderToolStripMenuItem
             // 
             this.surrenderToolStripMenuItem.Name = "surrenderToolStripMenuItem";
-            this.surrenderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.surrenderToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.surrenderToolStripMenuItem.Text = "Surrender";
             this.surrenderToolStripMenuItem.Click += new System.EventHandler(this.surrenderToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -122,6 +122,13 @@
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
             // 
+            // movesToolStripMenuItem
+            // 
+            this.movesToolStripMenuItem.Name = "movesToolStripMenuItem";
+            this.movesToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.movesToolStripMenuItem.Text = "Moves";
+            this.movesToolStripMenuItem.Click += new System.EventHandler(this.movesToolStripMenuItem_Click);
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -129,6 +136,13 @@
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // rulesToolStripMenuItem
+            // 
+            this.rulesToolStripMenuItem.Name = "rulesToolStripMenuItem";
+            this.rulesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rulesToolStripMenuItem.Text = "Rules";
+            this.rulesToolStripMenuItem.Click += new System.EventHandler(this.rulesToolStripMenuItem_Click);
             // 
             // lbMoves
             // 
@@ -151,19 +165,6 @@
             this.btnSurrender.UseVisualStyleBackColor = true;
             this.btnSurrender.Visible = false;
             this.btnSurrender.Click += new System.EventHandler(this.btnSurrender_Click);
-            // 
-            // movesToolStripMenuItem
-            // 
-            this.movesToolStripMenuItem.Name = "movesToolStripMenuItem";
-            this.movesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.movesToolStripMenuItem.Text = "Moves";
-            this.movesToolStripMenuItem.Click += new System.EventHandler(this.movesToolStripMenuItem_Click);
-            // 
-            // rulesToolStripMenuItem
-            // 
-            this.rulesToolStripMenuItem.Name = "rulesToolStripMenuItem";
-            this.rulesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.rulesToolStripMenuItem.Text = "Rules";
             // 
             // fSimpleChess
             // 

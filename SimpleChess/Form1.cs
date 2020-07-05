@@ -26,6 +26,8 @@ namespace SimpleChess
         List<Moves> MovesMade;
         ChessColor turn = ChessColor.WHITE;
         Dictionary<ChessColor,King> Kings = new Dictionary<ChessColor, King>();
+        Computer computer;
+        bool computer_enabled;
         private static readonly int turn_time = 60;
         private int timeElapsed = 0;
         public fSimpleChess()
@@ -43,10 +45,23 @@ namespace SimpleChess
             move.init = true;
             MovesMade.Add(move);
             loadMoves();
+            computer_enabled = false;
+            computer = new Computer(piecePositions, positionOnBoard, BoardPieces, black_pieces, white_pieces,Board);
+            computer.Controls = Controls;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            PlayMode playModeForm = new PlayMode();
+            if(playModeForm.ShowDialog() == DialogResult.Yes)
+            {
+                computer_enabled = false;
+            }
+            else
+            {
+                computer_enabled = true;
+            }
+
             loadImages();
             DrawBoard();
             InitializePieces();
@@ -86,6 +101,10 @@ namespace SimpleChess
 
         private void Piece_MouseClick(Object sender, MouseEventArgs e)
         {
+            if (computer_enabled && turn == ChessColor.BLACK)
+            {
+                return;
+            }
             
             if (selected != null)
             {
@@ -128,6 +147,7 @@ namespace SimpleChess
         
         private void Board_MouseClick(Object sender, MouseEventArgs e)
         {
+            if(!computer_enabled || turn != ChessColor.BLACK)
             if(selected != null && ((PictureBox)sender) != selected)
             {
                 if (BoardPieces[selected].Type != PieceType.KING && Kings[BoardPieces[selected].Color].Check(white_pieces, black_pieces, piecePositions))
@@ -245,6 +265,7 @@ namespace SimpleChess
         private void TakeEnemyPiece(PictureBox sender)
         {
             bool pass = false;
+            if (!computer_enabled || turn != ChessColor.BLACK)
             if (selected != null && (sender) != selected)
             {
                 if (BoardPieces[selected].Type != PieceType.KING && Kings[BoardPieces[selected].Color].Check(white_pieces, black_pieces, piecePositions))
@@ -750,6 +771,12 @@ namespace SimpleChess
 
         private void PlayerTime_Tick(object sender, EventArgs e)
         {
+            if(computer_enabled && turn == ChessColor.BLACK)
+            {
+                MovesMade.Add(computer.evaluate());
+                loadMoves();
+                turn = ChessColor.WHITE;
+            }
             timeElapsed++;
             if(timeElapsed == 30)
             {
@@ -816,6 +843,7 @@ namespace SimpleChess
 
         private void v2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            computer_enabled = false;
             NewGame();
         }
 
@@ -840,6 +868,12 @@ namespace SimpleChess
         private void movesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             lbMoves.Visible = !lbMoves.Visible;
+        }
+
+        private void rulesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Rules rulesForm = new Rules();
+            rulesForm.ShowDialog();
         }
     }
 }
