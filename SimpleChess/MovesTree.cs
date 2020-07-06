@@ -14,15 +14,17 @@ namespace SimpleChess
         public List<ChessPiece> Black;
         public Moves move { get; set; }
         public List<MovesNode> Children { get; set; }
+        public int Value { get; set; }
         public MovesNode(Dictionary<char, Dictionary<int, positionInfo>> board, List<ChessPiece> white, List<ChessPiece> black, Moves moves)
         {
             Board = board;
             White = white;
             Black = black;
             move = moves;
+            Value = value();
             Children = new List<MovesNode>();
         }
-        public int Value()
+        private int value()
         {
             int sum = 0;
             foreach (var posinfo in Board.Values)
@@ -56,8 +58,8 @@ namespace SimpleChess
                             {
                                 switch (Board[moves.X][moves.Y].piece.Type)
                                 {
-                                    case PieceType.PAWN: sum = p.piece.Color == ChessColor.BLACK ? (sum - 20) : (sum + 20); break;
-                                    case PieceType.ROOK: sum = p.piece.Color == ChessColor.BLACK ? (sum - 40) : (sum + 40); break;
+                                    case PieceType.PAWN: sum = p.piece.Color == ChessColor.BLACK ? (sum - 30) : (sum + 30); break;
+                                    case PieceType.ROOK: sum = p.piece.Color == ChessColor.BLACK ? (sum - 50) : (sum + 50); break;
                                     case PieceType.KNIGHT: sum = p.piece.Color == ChessColor.BLACK ? (sum - 55) : (sum + 55); break;
                                     case PieceType.BISHOP: sum = p.piece.Color == ChessColor.BLACK ? (sum - 70) : (sum + 70); break;
                                     case PieceType.QUEEN: sum = p.piece.Color == ChessColor.BLACK ? (sum - 200) : (sum + 200); break;
@@ -100,19 +102,21 @@ namespace SimpleChess
         public int AlphaBeta(MovesNode node, int depth, int alpha, int beta, bool maximizingPlayer)
         {
             if (depth == 0)
-                return node.Value();
+            {
+                return node.Value;
+            }
             if(maximizingPlayer)
             {
                 int Value = int.MinValue;
                 foreach (MovesNode child in node.Children)
                 {
-                    int cmpVal = AlphaBeta(child, depth - 1, alpha, beta, false);
+                    int cmpVal = AlphaBeta(child, depth - 1, alpha, beta, !maximizingPlayer);
                     Value = Math.Max(Value, cmpVal);
-                    //alpha = Math.Max(alpha, Value);
-                    //if (alpha >= beta)
-                    //{
-                    //    break;
-                    //}
+                    alpha = Math.Max(alpha, Value);
+                    if (alpha >= beta)
+                    {
+                        break;
+                    }
                 }
                 return Value;
             }
@@ -121,13 +125,13 @@ namespace SimpleChess
                 int Value = int.MaxValue;
                 foreach (MovesNode child in node.Children)
                 {
-                    int cmpVal = AlphaBeta(child, depth - 1, alpha, beta, true);
+                    int cmpVal = AlphaBeta(child, depth - 1, alpha, beta, !maximizingPlayer);
                     Value = Math.Min(Value, cmpVal);
-                    //beta = Math.Min(beta, Value);
-                    //if (beta <= alpha)
-                    //{
-                    //    break;
-                    //}
+                    beta = Math.Min(beta, Value);
+                    if (beta <= alpha)
+                    {
+                        break;
+                    }
                 }
                 return Value;
             }

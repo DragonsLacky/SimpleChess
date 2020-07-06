@@ -149,6 +149,7 @@ namespace SimpleChess
         
         private void Board_MouseClick(Object sender, MouseEventArgs e)
         {
+            bool accepted = false;
             if(!computer_enabled || turn != ChessColor.BLACK)
             if(selected != null && ((PictureBox)sender) != selected)
             {
@@ -182,10 +183,10 @@ namespace SimpleChess
                         DeselectBoard();
                         return;
                     }
+                        accepted = true;
                 }
-                if (BoardPieces[selected].checkValidMove(positionOnBoard[(PictureBox)sender], white_pieces, black_pieces, piecePositions))
+                if (accepted || BoardPieces[selected].checkValidMove(positionOnBoard[(PictureBox)sender], white_pieces, black_pieces, piecePositions))
                 {
-                    
                     positionInfo startPos = piecePositions[BoardPieces[selected].Position.X][BoardPieces[selected].Position.Y];
                     positionInfo endPos = piecePositions[positionOnBoard[(PictureBox)sender].X][positionOnBoard[(PictureBox)sender].Y];
                     bool isPawnAtStart = false;

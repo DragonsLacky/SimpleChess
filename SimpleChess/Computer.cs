@@ -19,6 +19,7 @@ namespace SimpleChess
         public List<ChessPiece> MyPieces { get; set; }
         public List<ChessPiece> EnemyPieces { get; set; }
         public MovesTree moves { get; set; }
+        public Random random { get; set; }
         public Computer(Dictionary<char, Dictionary<int, positionInfo>> positions, Dictionary<PictureBox, ChessPosition> positionOnBoard, Dictionary<PictureBox, ChessPiece> boardPieces, List<ChessPiece> myPieces, List<ChessPiece> enemyPieces,Dictionary<char, Dictionary<int, PictureBox>> boardPos  )
         {
             Positions = positions;
@@ -27,6 +28,7 @@ namespace SimpleChess
             MyPieces = myPieces;
             EnemyPieces = enemyPieces;
             BoardPos = boardPos;
+            random = new Random();
             moves = new MovesTree(Positions, EnemyPieces, MyPieces, null);
         }
         public Object InitializeTree(int depth, MovesNode node, bool turn, Dictionary<char, Dictionary<int, positionInfo>> pos)
@@ -127,24 +129,34 @@ namespace SimpleChess
                         positions[piece.Position.X][piece.Position.Y].piece = null;
                         positions[move.X][move.Y].piece.MovePiece(move.X, move.Y);
                     }
-                    
-                    node.Children.Add(new MovesNode(positions, whitePieces, blackPieces, movement));
+                    if(random.Next(1, 10) < 6)
+                    {
+                        node.Children.Add(new MovesNode(positions, whitePieces, blackPieces, movement));
+                    }
                 }
+            }
+            if(!turn)
+            {
+                node.Children.Sort((i, j) => i.Value.CompareTo(j.Value));
+            }
+            else
+            {
+                node.Children.Sort((i, j) => j.Value.CompareTo(i.Value));
             }
             foreach (var child in node.Children)
             {
-                return InitializeTree(depth - 1, child, !turn, child.Board);
+                InitializeTree(depth - 1, child, !turn, child.Board);
             }
             return null;
         }
         public Moves evaluate()
         {
             moves = new MovesTree(Positions, EnemyPieces, MyPieces, null);
-            InitializeTree(11, moves.Root, true, Positions);
+            InitializeTree(3, moves.Root, true, Positions);
             List<int> nodes = new List<int>();
             foreach (var Child in moves.Root.Children)
             {
-                nodes.Add(moves.AlphaBeta(Child, 10,int.MinValue, int.MaxValue, true));
+                nodes.Add(moves.AlphaBeta(Child, 2,int.MinValue, int.MaxValue, true));
             }
             int min = int.MaxValue;
             foreach (var nodeValues in nodes)

@@ -47,7 +47,7 @@ namespace SimpleChess.Pieces
                     continue;
                 }
 
-                if(Occupied[validPositions[i].X][validPositions[i].Y].ocupied)
+                if(Occupied[validPositions[i].X][validPositions[i].Y].ocupied && Occupied[validPositions[i].X][validPositions[i].Y].piece.Color == Color)
                 {
                     validPositions.RemoveAt(i);
                     i--;
@@ -67,9 +67,8 @@ namespace SimpleChess.Pieces
                             continue;
                         for (int i = 0; i < validPositions.Count; i++)
                         {
-                            if (validPositions[i] == pos)
+                            if (validPositions[i] == pos && validPositions[i] != p.Position)
                             {
-                                
                                 validPositions.RemoveAt(i);
                                 i--;
                             }
